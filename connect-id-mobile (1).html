@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Connect.id</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --blue:        #1a6ec2;
+  --blue2:       #1d7fd6;
+  --blue-dark:   #155a9e;
+  --blue-pale:   #d4e8f9;
+  --yellow:      #f5c400;
+  --yellow2:     #ffd93d;
+  --yellow-pale: #fff8d6;
+  --white:       #ffffff;
+  --bg:          #ecf1f8;
+  --card:        #ffffff;
+  --text1:       #13203a;
+  --text2:       #3d5068;
+  --text3:       #8194aa;
+  --green:       #22c55e;
+  --green-pale:  #dcfce7;
+  --purple-pale: #ede9fe;
+  --r:           16px;
+  --rs:          10px;
+  --sh:          0 2px 12px rgba(26,110,194,0.10);
+  --sh2:         0 4px 20px rgba(26,110,194,0.16);
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: #b8c8dc;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 20px 0 40px;
+  min-height: 100vh;
+}
+
+.phone {
+  width: 390px;
+  min-height: 844px;
+  background: var(--bg);
+  border-radius: 50px;
+  overflow: hidden;
+  position: relative;
+  box-shadow:
+    0 0 0 10px #1b1b2f,
+    0 0 0 12px #2f2f52,
+    0 40px 100px rgba(0,0,0,0.35);
+  display: flex;
+  flex-direction: column;
+}
+
+.status {
+  background: var(--blue);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 13px 26px 7px;
+  font-size: 12px;
+  color: #fff;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.screen { display: none; flex-direction: column; flex: 1; overflow: hidden; }
+.screen.on { display: flex; animation: fadeUp .22s ease both; }
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(10px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.content {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  -webkit-overflow-scrolling: touch; scrollbar-width: none;
+}
+.content::-webkit-scrollbar { display: none; }
+
+.bnav {
+  background: #fff; border-top: 1px solid #e2eaf4;
+  display: flex; justify-content: space-around;
+  padding: 8px 0 20px; flex-shrink: 0;
+}
+.bn {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 3px; cursor: pointer; padding: 4px 10px;
+  border-radius: 12px; border: none; background: transparent;
+  transition: all .15s;
+}
+.bn .ico { font-size: 21px; color: var(--text3); }
+.bn .lbl { font-size: 9.5px; font-weight: 700; color: var(--text3); font-family: 'Plus Jakarta Sans',sans-serif; }
+.bn.act .ico { color: var(--blue); }
+.bn.act .lbl { color: var(--blue); }
+
+.ph {
+  background: var(--blue); padding: 14px 16px 18px;
+  border-radius: 0 0 26px 26px;
+  display: flex; align-items: center; gap: 12px; flex-shrink: 0;
+}
+.ph-back {
+  width: 34px; height: 34px;
+  background: rgba(255,255,255,.18); border-radius: 50%;
+  border: none; color: #fff; font-size: 18px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.ph-title { flex: 1; font-family: 'Nunito',sans-serif; font-size: 18px; font-weight: 800; color: #fff; }
+
+.card { background: var(--card); border-radius: var(--r); box-shadow: var(--sh); }
+.sec-hd {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 16px 8px;
+}
+.sec-hd h4 { font-size: 14px; font-weight: 800; color: var(--text1); }
+.sec-hd a  { font-size: 12px; color: var(--blue); font-weight: 700; text-decoration: none; cursor: pointer; }
+
+.tag { display: inline-block; font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 20px; }
+.tag-b  { background: var(--blue-pale);   color: var(--blue); }
+.tag-y  { background: var(--yellow-pale); color: #92400e; }
+.tag-g  { background: var(--green-pale);  color: #065f46; }
+.tag-p  { background: var(--purple-pale); color: #5b21b6; }
+
+.chip {
+  display: inline-block; padding: 5px 13px;
+  background: #fff; border-radius: 20px;
+  font-size: 11px; font-weight: 700; color: var(--text2);
+  cursor: pointer; border: 1.5px solid #d4dde9;
+  transition: all .15s; font-family: 'Plus Jakarta Sans',sans-serif;
+}
+.chip.on  { background: var(--blue);   color: #fff;        border-color: var(--blue); }
+.chip.yon { background: var(--yellow); color: var(--text1); border-color: var(--yellow); }
+
+.sbar {
+  background: #fff; border-radius: 14px;
+  display: flex; align-items: center; padding: 10px 14px; gap: 9px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.07);
+}
+.sbar input {
+  border: none; outline: none; flex: 1;
+  font-family: 'Plus Jakarta Sans',sans-serif;
+  font-size: 13px; color: var(--text1); background: transparent;
+}
+.sbar input::placeholder { color: var(--text3); }
+.sbar .mic {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--blue); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; cursor: pointer; flex-shrink: 0;
+}
+
+.btn-blue {
+  width: 100%; background: var(--blue); color: #fff;
+  border: none; border-radius: 10px; padding: 10px;
+  font-size: 12px; font-weight: 700; cursor: pointer;
+  font-family: 'Plus Jakarta Sans',sans-serif; transition: background .18s;
+}
+.btn-blue:hover { background: var(--blue2); }
+.btn-yellow {
+  width: 100%; background: var(--yellow); color: var(--text1);
+  border: none; border-radius: 10px; padding: 11px;
+  font-size: 13px; font-weight: 800; cursor: pointer;
+  font-family: 'Plus Jakarta Sans',sans-serif; transition: background .18s;
+}
+.btn-yellow:hover { background: var(--yellow2); }
+
+.fsel {
+  flex: 1; background: #fff; border: 1.5px solid #dde6f0; border-radius: 10px;
+  padding: 8px 10px; font-size: 12px; color: var(--text1);
+  font-family: 'Plus Jakarta Sans',sans-serif; cursor: pointer; outline: none;
+}
+
+/* ── BERANDA ── */
+.hdr-beranda {
+  background: var(--blue); padding: 14px 18px 22px;
+  border-radius: 0 0 28px 28px; flex-shrink: 0;
+}
+.hdr-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.logo { font-family: 'Nunito',sans-serif; font-size: 24px; font-weight: 900; color: #fff; letter-spacing: -.5px; }
+.logo em { color: var(--yellow); font-style: normal; }
+.hdr-icons { display: flex; gap: 10px; }
+.hico {
+  width: 36px; height: 36px; background: rgba(255,255,255,.18); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; cursor: pointer; border: none; color: #fff; position: relative;
+}
+.badge {
+  position: absolute; top: -3px; right: -3px; width: 16px; height: 16px;
+  background: #ef4444; border-radius: 50%; font-size: 8px; font-weight: 800;
+  color: #fff; display: flex; align-items: center; justify-content: center;
+}
+
+.qgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 14px 16px 0; }
+.qcard {
+  background: var(--card); border-radius: var(--r); padding: 14px 12px;
+  box-shadow: var(--sh); display: flex; flex-direction: column;
+  align-items: center; gap: 8px; cursor: pointer; border: 2px solid transparent;
+  transition: all .18s;
+}
+.qcard:hover { box-shadow: var(--sh2); transform: translateY(-2px); }
+.qico { width: 44px; height: 44px; border-radius: 13px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+.qico.b { background: var(--blue-pale); }
+.qico.y { background: var(--yellow-pale); }
+.qico.g { background: var(--green-pale); }
+.qico.p { background: var(--purple-pale); }
+.qlabel { font-size: 12px; font-weight: 800; color: var(--text1); text-align: center; }
+.qsub   { font-size: 10px; color: var(--text3); text-align: center; }
+
+.hscroll { display: flex; gap: 12px; padding: 0 16px 18px; overflow-x: auto; scrollbar-width: none; }
+.hscroll::-webkit-scrollbar { display: none; }
+.jcard { min-width: 162px; background: var(--card); border-radius: var(--rs); padding: 14px; box-shadow: var(--sh); flex-shrink: 0; }
+.jcard .jco { font-size: 10px; color: var(--text3); margin-bottom: 3px; }
+.jcard .jti { font-size: 13px; font-weight: 800; color: var(--text1); margin-bottom: 8px; line-height: 1.3; }
+.tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px; }
+
+.info-strip {
+  margin: 2px 16px 20px;
+  background: linear-gradient(120deg, #1a6ec2, #1d8fe8);
+  border-radius: var(--r); padding: 16px;
+  display: flex; gap: 12px; align-items: center; color: #fff;
+}
+.inum { font-size: 22px; font-weight: 900; font-family: 'Nunito',sans-serif; color: var(--yellow); }
+.itxt { font-size: 12px; line-height: 1.5; }
+
+.sdgs {
+  margin: 0 16px 14px;
+  background: linear-gradient(120deg,#065f46,#16a34a);
+  border-radius: var(--r); padding: 14px 16px;
+  display: flex; gap: 12px; align-items: center; color: #fff;
+}
+.sdgs .sico { font-size: 32px; }
+.sdgs .stxt { font-size: 12px; line-height: 1.55; }
+
+/* ── PROFIL ── */
+.profil-hero {
+  background: var(--blue); padding: 0 0 24px;
+  border-radius: 0 0 30px 30px;
+  display: flex; flex-direction: column; align-items: center;
+  position: relative; flex-shrink: 0;
+}
+.profil-back-row {
+  width: 100%; display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 16px 16px;
+}
+.profil-av {
+  width: 86px; height: 86px; border-radius: 50%;
+  background: linear-gradient(135deg, #90d0f5, #1a6ec2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 40px; border: 4px solid var(--yellow); margin-bottom: 10px;
+}
+.profil-name { font-size: 18px; font-weight: 900; color: #fff; font-family: 'Nunito',sans-serif; }
+.profil-nim  { font-size: 12px; color: rgba(255,255,255,.75); margin-bottom: 10px; }
+.profil-dis  { background: var(--yellow); color: var(--text1); font-size: 11px; font-weight: 800; padding: 4px 14px; border-radius: 20px; }
+
+.profil-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding: 16px 16px 0; }
+.pstat { background: var(--card); border-radius: var(--rs); padding: 12px 8px; text-align: center; box-shadow: var(--sh); }
+.pval { font-size: 20px; font-weight: 900; color: var(--blue); font-family: 'Nunito',sans-serif; }
+.pkey { font-size: 10px; color: var(--text3); font-weight: 600; margin-top: 2px; }
+
+.psec { padding: 14px 16px 0; }
+.psec h5 { font-size: 13px; font-weight: 800; color: var(--text1); margin-bottom: 10px; }
+.skill-row { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 14px; }
+
+.pinfo-card { background: var(--card); border-radius: var(--rs); padding: 2px 16px; box-shadow: var(--sh); margin-bottom: 10px; }
+.prow {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid #f0f4fa;
+}
+.prow:last-child { border-bottom: none; }
+.prow .pico { font-size: 17px; width: 26px; text-align: center; flex-shrink: 0; }
+.prow .pk   { font-size: 12px; color: var(--text3); flex: 1; }
+.prow .pv   { font-size: 12px; font-weight: 700; color: var(--text1); text-align: right; }
+
+.btn-edit {
+  margin: 14px 16px 20px;
+  background: var(--yellow); color: var(--text1);
+  border: none; border-radius: 12px; padding: 13px;
+  width: calc(100% - 32px);
+  font-size: 14px; font-weight: 800; cursor: pointer;
+  font-family: 'Plus Jakarta Sans',sans-serif;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+
+/* ── LOWONGAN ── */
+.fsec { padding: 14px 16px 0; }
+.fsec label { font-size: 12px; font-weight: 700; color: var(--text2); display: block; margin-bottom: 7px; }
+.fchips { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 12px; }
+.frow { display: flex; gap: 8px; margin-bottom: 12px; }
+
+.litem { background: var(--card); border-radius: var(--rs); padding: 15px 15px 13px; margin: 0 16px 12px; box-shadow: var(--sh); }
+.litem-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
+.litem-title { font-size: 14px; font-weight: 800; color: var(--text1); line-height: 1.3; flex: 1; }
+.litem-icos  { display: flex; gap: 3px; font-size: 17px; flex-shrink: 0; }
+.litem-co    { font-size: 11px; color: var(--text3); margin-bottom: 8px; }
+.litem-desc  { font-size: 12px; color: var(--text2); line-height: 1.55; margin-bottom: 11px; }
+
+/* ── PELATIHAN ── */
+.tabs { display: flex; gap: 8px; padding: 10px 16px 0; flex-shrink: 0; }
+.tab {
+  padding: 7px 16px; border-radius: 20px; font-size: 12px; font-weight: 700;
+  cursor: pointer; border: none; background: #fff; color: var(--text2);
+  font-family: 'Plus Jakarta Sans',sans-serif; transition: all .15s; box-shadow: var(--sh);
+}
+.tab.on { background: var(--blue); color: #fff; }
+
+.pcard { background: var(--card); border-radius: var(--rs); padding: 14px; margin: 0 16px 12px; box-shadow: var(--sh); display: flex; gap: 12px; }
+.pico2 { width: 48px; height: 48px; border-radius: 13px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+.pcard-info { flex: 1; }
+.pcard-title { font-size: 13px; font-weight: 800; color: var(--text1); margin-bottom: 3px; line-height: 1.3; }
+.pcard-prov  { font-size: 11px; color: var(--text3); margin-bottom: 7px; }
+.pcard-acc   { font-size: 11px; color: var(--text2); display: flex; gap: 6px; align-items: center; margin: 7px 0 9px; flex-wrap: wrap; }
+
+/* ── FREELANCE ── */
+.kscroll { display: flex; gap: 8px; padding: 12px 16px 8px; overflow-x: auto; scrollbar-width: none; flex-shrink: 0; }
+.kscroll::-webkit-scrollbar { display: none; }
+.kchip {
+  white-space: nowrap; padding: 7px 15px; background: #fff; border-radius: 20px;
+  font-size: 12px; font-weight: 700; color: var(--text2); cursor: pointer;
+  border: none; box-shadow: var(--sh); font-family: 'Plus Jakarta Sans',sans-serif; transition: all .15s;
+}
+.kchip.on { background: var(--blue); color: #fff; }
+
+.fcard { background: var(--card); border-radius: var(--rs); padding: 15px; margin: 0 16px 12px; box-shadow: var(--sh); }
+.fcard-top { display: flex; gap: 12px; align-items: center; margin-bottom: 10px; }
+.fav { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+.fname { font-size: 14px; font-weight: 800; color: var(--text1); }
+.frole { font-size: 11.5px; color: var(--text2); }
+.frate { font-size: 12px; color: #f59e0b; font-weight: 700; }
+.fcard-acc { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 8px; }
+.fcard-dis { font-size: 11px; color: var(--text3); margin-bottom: 10px; }
+.btn-contact {
+  width: 100%; background: var(--yellow); color: var(--text1);
+  border: none; border-radius: 10px; padding: 10px;
+  font-size: 12px; font-weight: 800; cursor: pointer;
+  font-family: 'Plus Jakarta Sans',sans-serif; transition: background .15s;
+}
+.btn-contact:hover { background: var(--yellow2); }
+.btn-contact.blu { background: var(--blue); color: #fff; }
+.btn-contact.blu:hover { background: var(--blue2); }
+</style>
+</head>
+<body>
+<div class="phone">
+
+<!-- STATUS BAR -->
+<div class="status">
+  <span>9:41</span>
+  <div style="display:flex;gap:6px;align-items:center">
+    <svg width="15" height="12" viewBox="0 0 15 12" fill="none"><rect x="0" y="5" width="3" height="7" rx="1" fill="white" opacity=".4"/><rect x="4" y="3" width="3" height="9" rx="1" fill="white" opacity=".65"/><rect x="8" y="1" width="3" height="11" rx="1" fill="white" opacity=".85"/><rect x="12" y="0" width="3" height="12" rx="1" fill="white"/></svg>
+    <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><rect x="0" y="1" width="13" height="10" rx="2" stroke="white" stroke-width="1.2"/><rect x="13.5" y="4" width="2" height="4" rx="1" fill="white" opacity=".7"/><rect x="1.5" y="3" width="8" height="6" rx="1" fill="white"/></svg>
+  </div>
+</div>
+
+<!-- ═══════════════ BERANDA ═══════════════ -->
+<div class="screen on" id="sc-beranda">
+  <div class="hdr-beranda">
+    <div class="hdr-top">
+      <div class="logo">C<em>ø</em>nnect<em>.id</em></div>
+      <div class="hdr-icons">
+        <button class="hico"><span>🔔</span><span class="badge">3</span></button>
+        <button class="hico" onclick="go('profil')" title="Profil Pengguna">👤</button>
+      </div>
+    </div>
+    <div class="sbar">
+      <span style="font-size:16px;color:#8aa">🔍</span>
+      <input type="text" placeholder="Cari lowongan inklusif atau pelatihan...">
+      <div class="mic">🎤</div>
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- Profile card -->
+    <div class="card" style="margin:14px 16px 0;padding:14px 16px;display:flex;align-items:center;gap:14px;cursor:pointer;" onclick="go('profil')">
+      <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#7ec8f0,#1a6ec2);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;border:3px solid var(--yellow);transition:transform .15s;" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'">👩</div>
+      <div style="flex:1">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:2px">Putri • 20 tahun</div>
+        <div style="font-size:15px;font-weight:800;color:var(--text1)">Profil Berbasis Kemampuan</div>
+        <span style="background:#fff3cd;color:#b45309;font-size:10.5px;font-weight:700;padding:3px 10px;border-radius:20px;display:inline-block;margin:5px 0;">♿ Disabilitas Rungu</span>
+        <div style="font-size:11px;color:var(--text2);line-height:1.5">Ahli Desain Grafis | Adobe Illustrator<br>Minat di Industri Kreatif</div>
+      </div>
+    </div>
+
+    <!-- 4-grid menu -->
+    <div class="qgrid">
+      <div class="qcard" onclick="go('lowongan')">
+        <div class="qico b">💼</div>
+        <div class="qlabel">Lowongan Inklusif</div>
+        <div class="qsub">Akses cepat</div>
+      </div>
+      <div class="qcard" onclick="go('pelatihan')">
+        <div class="qico y">🎓</div>
+        <div class="qlabel">Pelatihan Digital</div>
+        <div class="qsub">Tingkatkan Skill</div>
+      </div>
+      <div class="qcard">
+        <div class="qico g">🤖</div>
+        <div class="qlabel">Smart Job Matching</div>
+        <div class="qsub">Rekomendasi Pintar</div>
+      </div>
+      <div class="qcard" onclick="go('freelance')">
+        <div class="qico p">🛒</div>
+        <div class="qlabel">Marketplace Freelance</div>
+        <div class="qsub">Kerja Mandiri</div>
+      </div>
+    </div>
+
+    <!-- Rekomendasi pekerjaan -->
+    <div class="sec-hd">
+      <h4>Rekomendasi Pekerjaan Untukmu</h4>
+      <a onclick="go('lowongan')">Lihat Semua</a>
+    </div>
+    <div class="hscroll">
+      <div class="jcard">
+        <div class="jco">Tech Startup X</div>
+        <div class="jti">UI/UX Designer (Remote)</div>
+        <div class="tags">
+          <span class="tag tag-b">Akses Kursi Roda</span>
+          <span class="tag tag-y">Jam Kerja Fleksibel</span>
+        </div>
+        <button class="btn-blue" onclick="go('lowongan')">Lamar Sekarang</button>
+      </div>
+      <div class="jcard">
+        <div class="jco">Global Corp Y</div>
+        <div class="jti">Data Entry Specialist</div>
+        <div class="tags">
+          <span class="tag tag-b">Remote</span>
+          <span class="tag tag-y">Bahasa Isyarat</span>
+        </div>
+        <button class="btn-blue" onclick="go('lowongan')">Lamar Sekarang</button>
+      </div>
+      <div class="jcard">
+        <div class="jco">Creative Studio Z</div>
+        <div class="jti">Content Creator Aksesibel</div>
+        <div class="tags">
+          <span class="tag tag-p">Freelance</span>
+          <span class="tag tag-y">Subtitle</span>
+        </div>
+        <button class="btn-blue" onclick="go('freelance')">Lamar Sekarang</button>
+      </div>
+    </div>
+
+    <!-- SDGs -->
+    <div class="sdgs">
+      <div class="sico">🌍</div>
+      <div class="stxt"><strong>SDGs Poin 8 – Pekerjaan Layak</strong><br>Connect.id mendukung pertumbuhan ekonomi inklusif &amp; berkelanjutan bagi penyandang disabilitas Indonesia.</div>
+    </div>
+
+    <!-- Stat -->
+    <div class="info-strip">
+      <div style="font-size:32px">📊</div>
+      <div>
+        <div class="inum">21,23 Juta</div>
+        <div class="itxt">Penyandang disabilitas usia kerja di Indonesia (Kemnaker 2024). Connect.id hadir untuk mereka ✨</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bnav">
+    <button class="bn act" onclick="go('beranda')"><span class="ico">🏠</span><span class="lbl">Beranda</span></button>
+    <button class="bn" onclick="go('lowongan')"><span class="ico">💼</span><span class="lbl">Lowongan</span></button>
+    <button class="bn" onclick="go('pelatihan')"><span class="ico">🎓</span><span class="lbl">Pelatihan</span></button>
+    <button class="bn" onclick="go('freelance')"><span class="ico">🛒</span><span class="lbl">Freelance</span></button>
+  </div>
+</div>
+
+<!-- ═══════════════ PROFIL ═══════════════ -->
+<div class="screen" id="sc-profil">
+  <div class="content">
+    <!-- Hero -->
+    <div class="profil-hero">
+      <div class="profil-back-row">
+        <button class="ph-back" onclick="go('beranda')">←</button>
+        <span style="font-family:'Nunito',sans-serif;font-size:16px;font-weight:800;color:#fff">Profil Saya</span>
+        <button class="ph-back" style="font-size:14px">✏️</button>
+      </div>
+      <div class="profil-av">👩</div>
+      <div class="profil-name">Putri Rahmawati</div>
+      <div class="profil-nim">K7624999 &nbsp;•&nbsp; Pendidikan Ekonomi &nbsp;•&nbsp; UNS</div>
+      <span class="profil-dis">♿ Disabilitas Rungu</span>
+    </div>
+
+    <!-- Stats -->
+    <div class="profil-stats">
+      <div class="pstat"><div class="pval">12</div><div class="pkey">Lamaran</div></div>
+      <div class="pstat"><div class="pval">4</div><div class="pkey">Pelatihan</div></div>
+      <div class="pstat"><div class="pval">2</div><div class="pkey">Diterima</div></div>
+    </div>
+
+    <!-- Keahlian -->
+    <div class="psec">
+      <h5>🎯 Keahlian</h5>
+      <div class="skill-row">
+        <span class="chip on">Desain Grafis</span>
+        <span class="chip on">Adobe Illustrator</span>
+        <span class="chip on">UI/UX Design</span>
+        <span class="chip on">Figma</span>
+        <span class="chip">Canva</span>
+        <span class="chip">Photoshop</span>
+      </div>
+    </div>
+
+    <!-- Info diri -->
+    <div class="psec">
+      <h5>📋 Informasi Diri</h5>
+      <div class="pinfo-card">
+        <div class="prow"><span class="pico">👤</span><span class="pk">Nama Lengkap</span><span class="pv">Putri Rahmawati</span></div>
+        <div class="prow"><span class="pico">🎂</span><span class="pk">Usia</span><span class="pv">20 Tahun</span></div>
+        <div class="prow"><span class="pico">♿</span><span class="pk">Jenis Disabilitas</span><span class="pv">Disabilitas Rungu</span></div>
+        <div class="prow"><span class="pico">📍</span><span class="pk">Lokasi</span><span class="pv">Surakarta, Jateng</span></div>
+        <div class="prow"><span class="pico">📧</span><span class="pk">Email</span><span class="pv" style="font-size:10.5px">putri@student.uns.ac.id</span></div>
+        <div class="prow"><span class="pico">📱</span><span class="pk">Telepon / WA</span><span class="pv">08xxxxxxxxxx</span></div>
+      </div>
+    </div>
+
+    <!-- Akomodasi -->
+    <div class="psec">
+      <h5>🛠️ Kebutuhan Akomodasi</h5>
+      <div class="skill-row">
+        <span class="chip on">Komunikasi Teks/Chat</span>
+        <span class="chip on">Subtitle Video</span>
+        <span class="chip on">Bahasa Isyarat</span>
+        <span class="chip">Voice Command</span>
+      </div>
+    </div>
+
+    <!-- Minat -->
+    <div class="psec">
+      <h5>🌟 Minat Industri</h5>
+      <div class="skill-row">
+        <span class="chip yon">Kreatif &amp; Desain</span>
+        <span class="chip yon">Teknologi Digital</span>
+        <span class="chip">Media &amp; Konten</span>
+      </div>
+    </div>
+
+    <button class="btn-edit">✏️ &nbsp; Edit Profil Saya</button>
+  </div>
+</div>
+
+<!-- ═══════════════ LOWONGAN ═══════════════ -->
+<div class="screen" id="sc-lowongan">
+  <div class="ph">
+    <button class="ph-back" onclick="go('beranda')">←</button>
+    <div class="ph-title">Lowongan Inklusif</div>
+    <span style="font-size:22px">💼</span>
+  </div>
+
+  <div class="content">
+    <div class="fsec" style="padding-bottom:0">
+      <div class="sbar" style="margin-bottom:10px;border-radius:12px">
+        <span style="font-size:16px;color:#8aa">🔍</span>
+        <input type="text" placeholder="Kata Kunci...">
+      </div>
+      <div class="frow">
+        <select class="fsel"><option>Lokasi</option><option>Remote</option><option>Jakarta</option><option>Surakarta</option></select>
+        <select class="fsel"><option>Tipe Pekerjaan</option><option>Full-time</option><option>Part-time</option><option>Freelance</option></select>
+      </div>
+      <label>Tipe Disabilitas</label>
+      <div class="fchips">
+        <span class="chip on">Rungu</span>
+        <span class="chip">Netra</span>
+        <span class="chip yon">Disabilitas Id</span>
+      </div>
+      <label>Akomodasi yang Dibutuhkan</label>
+      <div class="fchips">
+        <span class="chip on">Akses Kursi Roda</span>
+        <span class="chip on">Jam Kerja Fleksibel</span>
+        <span class="chip">Bahasa Isyarat</span>
+      </div>
+      <button class="btn-yellow" style="margin-bottom:16px">🔍&nbsp; Cari Lowongan</button>
+    </div>
+
+    <div class="litem">
+      <div class="litem-top">
+        <div class="litem-title">Senior UI/UX Designer<br>(Akses Kursi Roda)</div>
+        <div class="litem-icos"><span>♿</span><span>✅</span></div>
+      </div>
+      <div class="litem-co">Company Y &nbsp;•&nbsp; Remote</div>
+      <div class="tags"><span class="tag tag-b">Remote</span><span class="tag tag-y">Kursi Roda</span><span class="tag tag-g">Fleksibel</span></div>
+      <div class="litem-desc">Komunikasi utama tim menggunakan Teks/Chat. Ramah untuk Disabilitas Rungu. Lingkungan kerja inklusif dengan dukungan penuh.</div>
+      <button class="btn-blue">Lamar Sekarang</button>
+    </div>
+
+    <div class="litem">
+      <div class="litem-top">
+        <div class="litem-title">Senior UI/UX Designer,<br>mengisi design</div>
+        <div class="litem-icos"><span>🦻</span><span>💬</span></div>
+      </div>
+      <div class="litem-co">Company Y &nbsp;•&nbsp; Hybrid</div>
+      <div class="tags"><span class="tag tag-b">Komunikasi Teks</span><span class="tag tag-y">Ramah Disabilitas Rungu</span></div>
+      <div class="litem-desc">Komunikasi utama tim menggunakan Teks/Chat, Ramah untuk Disabilitas Rungu.</div>
+      <button class="btn-yellow">Lamar Sekarang</button>
+    </div>
+
+    <div class="litem">
+      <div class="litem-top">
+        <div class="litem-title">Data Entry Specialist<br>(Akses Netra)</div>
+        <div class="litem-icos"><span>👁️</span><span>🖥️</span></div>
+      </div>
+      <div class="litem-co">PT Digital Nusantara &nbsp;•&nbsp; Jakarta</div>
+      <div class="tags"><span class="tag tag-b">Screen Reader</span><span class="tag tag-y">Voice Command</span></div>
+      <div class="litem-desc">Platform kerja kompatibel dengan screen reader. Jam kerja fleksibel bagi penyandang disabilitas netra.</div>
+      <button class="btn-blue">Lamar Sekarang</button>
+    </div>
+
+    <div style="height:10px"></div>
+  </div>
+
+  <div class="bnav">
+    <button class="bn" onclick="go('beranda')"><span class="ico">🏠</span><span class="lbl">Beranda</span></button>
+    <button class="bn act" onclick="go('lowongan')"><span class="ico">💼</span><span class="lbl">Lowongan</span></button>
+    <button class="bn" onclick="go('pelatihan')"><span class="ico">🎓</span><span class="lbl">Pelatihan</span></button>
+    <button class="bn" onclick="go('freelance')"><span class="ico">🛒</span><span class="lbl">Freelance</span></button>
+  </div>
+</div>
+
+<!-- ═══════════════ PELATIHAN ═══════════════ -->
+<div class="screen" id="sc-pelatihan">
+  <div class="ph">
+    <button class="ph-back" onclick="go('beranda')">←</button>
+    <div class="ph-title">Pelatihan Digital</div>
+    <span style="font-size:22px">🎓</span>
+  </div>
+
+  <div class="fsec" style="padding-bottom:0;flex-shrink:0">
+    <div class="sbar" style="margin-bottom:10px;border-radius:12px">
+      <span style="font-size:16px;color:#8aa">🔍</span>
+      <input type="text" placeholder="Kata Kunci Kursus...">
+    </div>
+    <label>Pilih Bidang</label>
+    <div class="fchips">
+      <span class="chip on">Desain Grafis</span>
+      <span class="chip">Pemrograman</span>
+      <span class="chip">Data Science</span>
+    </div>
+    <label>Kategori Kebutuhan</label>
+    <div class="fchips" style="margin-bottom:4px">
+      <span class="chip on">Akses Kursi Roda/Tuli</span>
+      <span class="chip">Akses Netra/Screen</span>
+      <span class="chip yon">Pembelajaran Visual, JB</span>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" onclick="setTab(this)">Pemula</button>
+    <button class="tab" onclick="setTab(this)">Menengah</button>
+    <button class="tab" onclick="setTab(this)">Mahir</button>
+  </div>
+
+  <div class="content" style="padding-top:12px">
+    <div class="pcard">
+      <div class="pico2" style="background:#fff8d6">🎨</div>
+      <div class="pcard-info">
+        <div class="pcard-title">Kursus Dasar Desain Grafis<br>(Inklusif Rungu)</div>
+        <div class="pcard-prov">Academy Inklusif</div>
+        <div class="tags"><span class="tag tag-b">Ramah Rungu</span><span class="tag tag-y">Konten Teks/Visual</span></div>
+        <div class="pcard-acc"><span>♿ Ramah Rungu</span><span>•</span><span>📺 Teks/Visual</span></div>
+        <button class="btn-blue" style="padding:9px;font-size:12px">Daftar Sekarang</button>
+      </div>
+    </div>
+
+    <div class="pcard">
+      <div class="pico2" style="background:#dbeafe">💻</div>
+      <div class="pcard-info">
+        <div class="pcard-title">Data Science for Beginners<br>(Akses Netra)</div>
+        <div class="pcard-prov">Digital Skill Indonesia</div>
+        <div class="tags"><span class="tag tag-b">Ramah Rungu</span><span class="tag tag-g">Kompatibel Teks</span></div>
+        <div class="pcard-acc"><span>👁️ Akses Netra</span><span>•</span><span>🔊 Screen Reader</span></div>
+        <button class="btn-blue" style="padding:9px;font-size:12px">Daftar Sekarang</button>
+      </div>
+    </div>
+
+    <div class="pcard">
+      <div class="pico2" style="background:#dcfce7">📱</div>
+      <div class="pcard-info">
+        <div class="pcard-title">Pemrograman Mobile Dasar<br>(Semua Disabilitas)</div>
+        <div class="pcard-prov">BLK Digital Surakarta</div>
+        <div class="tags"><span class="tag tag-g">Inklusif Penuh</span><span class="tag tag-y">Voice &amp; Visual</span></div>
+        <div class="pcard-acc"><span>✅ Semua Akses</span><span>•</span><span>🎙️ Voice Command</span></div>
+        <button class="btn-yellow" style="padding:9px;font-size:12px">Daftar Sekarang</button>
+      </div>
+    </div>
+    <div style="height:10px"></div>
+  </div>
+
+  <div class="bnav">
+    <button class="bn" onclick="go('beranda')"><span class="ico">🏠</span><span class="lbl">Beranda</span></button>
+    <button class="bn" onclick="go('lowongan')"><span class="ico">💼</span><span class="lbl">Lowongan</span></button>
+    <button class="bn act" onclick="go('pelatihan')"><span class="ico">🎓</span><span class="lbl">Pelatihan</span></button>
+    <button class="bn" onclick="go('freelance')"><span class="ico">🛒</span><span class="lbl">Freelance</span></button>
+  </div>
+</div>
+
+<!-- ═══════════════ FREELANCE ═══════════════ -->
+<div class="screen" id="sc-freelance">
+  <div class="ph">
+    <button class="ph-back" onclick="go('beranda')">←</button>
+    <div class="ph-title">Marketplace Freelance</div>
+    <span style="font-size:22px">🛒</span>
+  </div>
+
+  <div style="padding:12px 16px 0;flex-shrink:0">
+    <div class="sbar" style="border-radius:12px">
+      <span style="font-size:16px;color:#8aa">🔍</span>
+      <input type="text" placeholder="Cari Jasa Freelance...">
+      <div class="mic">🎤</div>
+    </div>
+  </div>
+
+  <div class="kscroll">
+    <button class="kchip on" onclick="setKat(this)">Desain Grafis</button>
+    <button class="kchip" onclick="setKat(this)">Pembuatan Konten</button>
+    <button class="kchip" onclick="setKat(this)">Data Entry</button>
+    <button class="kchip" onclick="setKat(this)">Dev</button>
+  </div>
+
+  <div style="padding:0 16px 6px;flex-shrink:0">
+    <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:7px">Tingkat Pengalaman</div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px">
+      <span class="chip on">Pemula</span>
+      <span class="chip">Menengah</span>
+      <span class="chip">Ahli</span>
+    </div>
+    <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:7px">Aksesibilitas Freelancer</div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px">
+      <span class="chip on">Penyandang Daksa/Rungu/Netra</span>
+      <span class="chip">Autis</span>
+      <span class="chip yon">Lainnya</span>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="fcard">
+      <div class="fcard-top">
+        <div class="fav" style="background:#dbeafe">🧑‍🎨</div>
+        <div style="flex:1">
+          <div class="fname">Budi Santoso</div>
+          <div class="frole">UI/UX Designer Adaptif</div>
+          <div class="frate">⭐ 4.9 &nbsp;(128 ulasan)</div>
+        </div>
+        <div style="font-size:19px;display:flex;gap:3px"><span>♿</span><span>🦻</span></div>
+      </div>
+      <div class="fcard-acc">
+        <span class="tag tag-b">Komunikasi Teks/Chat</span>
+        <span class="tag tag-y">Akses Disabilitas Daksa</span>
+      </div>
+      <div class="fcard-dis">Disabilitas: Tuna Daksa &amp; Rungu</div>
+      <button class="btn-contact">💬 Hubungi Freelancer</button>
+    </div>
+
+    <div class="fcard">
+      <div class="fcard-top">
+        <div class="fav" style="background:#dcfce7">👩‍💻</div>
+        <div style="flex:1">
+          <div class="fname">Fatimah</div>
+          <div class="frole">Penulis Konten Aksesibel</div>
+          <div class="frate">⭐ 4.7 &nbsp;(64 ulasan)</div>
+        </div>
+        <div style="font-size:19px">🦻</div>
+      </div>
+      <div class="fcard-acc">
+        <span class="tag tag-b">Ramah Rungu</span>
+        <span class="tag tag-y">Chat only</span>
+      </div>
+      <div class="fcard-dis">Disabilitas: Tuna Rungu</div>
+      <button class="btn-contact">💬 Hubungi Freelancer</button>
+    </div>
+
+    <div class="fcard">
+      <div class="fcard-top">
+        <div class="fav" style="background:#ede9fe">🧑‍💼</div>
+        <div style="flex:1">
+          <div class="fname">Andri Wijaya</div>
+          <div class="frole">Data Analyst &amp; Entry</div>
+          <div class="frate">⭐ 4.8 &nbsp;(97 ulasan)</div>
+        </div>
+        <div style="font-size:19px">👁️</div>
+      </div>
+      <div class="fcard-acc">
+        <span class="tag tag-b">Screen Reader</span>
+        <span class="tag tag-y">Voice Command</span>
+      </div>
+      <div class="fcard-dis">Disabilitas: Tuna Netra</div>
+      <button class="btn-contact blu">💬 Hubungi Freelancer</button>
+    </div>
+
+    <div style="height:10px"></div>
+  </div>
+
+  <div class="bnav">
+    <button class="bn" onclick="go('beranda')"><span class="ico">🏠</span><span class="lbl">Beranda</span></button>
+    <button class="bn" onclick="go('lowongan')"><span class="ico">💼</span><span class="lbl">Lowongan</span></button>
+    <button class="bn" onclick="go('pelatihan')"><span class="ico">🎓</span><span class="lbl">Pelatihan</span></button>
+    <button class="bn act" onclick="go('freelance')"><span class="ico">🛒</span><span class="lbl">Freelance</span></button>
+  </div>
+</div>
+
+</div><!-- /phone -->
+<script>
+function go(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
+  const el = document.getElementById('sc-' + name);
+  if (el) el.classList.add('on');
+}
+function setTab(el) {
+  el.closest('.tabs').querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+  el.classList.add('on');
+}
+function setKat(el) {
+  el.closest('.kscroll').querySelectorAll('.kchip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+}
+document.querySelectorAll('.chip').forEach(c => {
+  c.addEventListener('click', function() { this.classList.toggle('on'); });
+});
+</script>
+</body>
+</html>
